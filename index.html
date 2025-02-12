@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纱线等级查询系统</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1></h1>
+        
+        <div class="content-wrapper">
+            <section class="input-section">
+                <h2>参数输入</h2>
+                <div class="input-group">
+                    <label for="length">长度 (mm):</label>
+                    <input type="number" id="length" step="0.1" placeholder="请输入长度" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="fineness">细度 (μm):</label>
+                    <input type="number" id="fineness" step="0.1" placeholder="请输入细度" required>
+                </div>
+                
+                <button class="btn btn-full" onclick="checkGrade()">查询等级</button>
+            </section>
+
+            <section class="result-section">
+                <h2>查询结果</h2>
+                <div id="result">
+                    <div class="grade-result"></div>
+                    <div class="result-details"></div>
+                </div>
+                <button class="btn btn-full" onclick="showPasswordPrompt()">查看完整对照表</button>
+            </section>
+        </div>
+    </div>
+
+    <!-- 密码验证模态框 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>请输入密码</h2>
+            <input type="password" id="password" class="password-input" placeholder="请输入密码">
+            <button class="btn" onclick="verifyPassword()">确认</button>
+        </div>
+    </div>
+
+    <!-- 表格模态框 -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <h2>等级对照表</h2>
+            <div class="table-container">
+                <table id="gradeTable">
+                    <thead>
+                        <tr>
+                            <th>对应纱线配绒等级</th>
+                            <th>长度(㎜)</th>
+                            <th>细度(μm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>G1</td><td>34.5≤b</td><td>c≤15</td></tr>
+                        <tr><td>G2</td><td>32≤b＜34.5</td><td>c≤15</td></tr>
+                        <tr><td>G3</td><td>28≤b＜30</td><td>c≤15</td></tr>
+                        <tr><td>G4</td><td>28≤b＜30</td><td>c≤15</td></tr>
+                        <tr><td>G5</td><td>26≤b＜28</td><td>c≤15</td></tr>
+                        <tr><td>G6</td><td>26≤b＜28</td><td>c≤15</td></tr>
+                        <tr><td>J0</td><td>34.5≤b</td><td>15.0＜c≤15.2</td></tr>
+                        <tr><td>J1</td><td>34.5≤b</td><td>15.2＜c＜15.6</td></tr>
+                        <tr><td>J2</td><td>34.5≤b</td><td>15.6≤c≤16.0</td></tr>
+                        <tr><td>J3</td><td>33.5≤b＜34.5</td><td>16.3≤c≤16.6</td></tr>
+                        <tr><td>J4</td><td>34.5≤b</td><td>16.0＜c≤16.2</td></tr>
+                        <tr><td>J5</td><td>34.5≤b</td><td>16.2＜c＜16.5</td></tr>
+                        <tr><td>A00</td><td>34.0≤b＜34.5</td><td>15.2＜c＜15.6</td></tr>
+                        <tr><td>A01</td><td>32≤b＜34</td><td>15.2＜c＜15.6</td></tr>
+                        <tr><td>A02</td><td>32≤b＜33.5</td><td>15.6≤c≤15.8</td></tr>
+                        <tr><td>A03</td><td>31.5＜b＜33</td><td>15.8＜c≤16.0</td></tr>
+                        <tr><td>A04</td><td>31.5＜b＜33</td><td>16.0＜c≤16.3</td></tr>
+                        <tr><td>A05</td><td>31.5＜b＜33.5</td><td>16.3＜c≤16.5</td></tr>
+                        <tr><td>A06</td><td>30≤b≤31.5</td><td>16.5＜c≤16.8</td></tr>
+                        <tr><td>A07</td><td>30≤b＜33</td><td>16.8＜c≤17.6</td></tr>
+                        <tr><td>B1</td><td>30≤b＜31.5</td><td>15.8＜c≤16.0</td></tr>
+                        <tr><td>B2</td><td>28≤b＜30</td><td>15.8＜c≤16.0</td></tr>
+                        <tr><td>B3</td><td>26≤b＜30</td><td>16.0＜c＜16.5</td></tr>
+                        <tr><td>B4</td><td>26≤b＜28</td><td>15.8＜c≤16.0</td></tr>
+                        <tr><td>B5</td><td>26≤b＜28</td><td>16.0＜c＜16.5</td></tr>
+                        <tr><td>B6</td><td>30≤b</td><td>16.6＜c≤17.2</td></tr>
+                        <tr><td>B7</td><td>28≤b＜30</td><td>16.5≤c≤16.8</td></tr>
+                        <tr><td>C1</td><td>34.5≤b</td><td>16.5≤c≤16.6</td></tr>
+                        <tr><td>C2</td><td>30≤b</td><td>17.2＜c</td></tr>
+                        <tr><td>C3</td><td>34≤b＜34.5</td><td>15.0＜c≤15.2</td></tr>
+                        <tr><td>C4</td><td>34≤b＜34.5</td><td>15.6≤c＜15.8</td></tr>
+                        <tr><td>C5</td><td>34≤b＜34.5</td><td>15.8≤c＜16.3</td></tr>
+                        <tr><td>C6</td><td>33.5≤b＜34</td><td>15.6≤c＜15.8</td></tr>
+                        <tr><td>C7</td><td>33.5≤b＜34</td><td>15.8≤c＜16</td></tr>
+                        <tr><td>C8</td><td>33.0＜b＜34</td><td>16.0≤c＜16.3</td></tr>
+                        <tr><td>C9</td><td>33＜b＜33.5</td><td>15.8＜c＜16</td></tr>
+                        <tr><td>C10</td><td>33≤b＜33.5</td><td>16.5＜c≤16.6</td></tr>
+                        <tr><td>C11</td><td>30≤b＜32</td><td>c≤15.2</td></tr>
+                        <tr><td>C12</td><td>32≤b＜34</td><td>15.0＜c≤15.2</td></tr>
+                        <tr><td>C13</td><td>31.5＜b＜33</td><td>16.5＜c</td></tr>
+                        <tr><td>C14</td><td>30≤b＜32</td><td>15.2＜c≤15.5</td></tr>
+                        <tr><td>C15</td><td>30≤b＜32</td><td>15.5＜c≤15.8</td></tr>
+                        <tr><td>C16</td><td>30≤b≤31.5</td><td>16.0＜c≤16.5</td></tr>
+                        <tr><td>C17</td><td>30≤b＜33</td><td>17.6＜c</td></tr>
+                        <tr><td>C18</td><td>28≤b＜30</td><td>16.8＜c</td></tr>
+                        <tr><td>C19</td><td>26≤b＜30</td><td>15.0＜c≤15.2</td></tr>
+                        <tr><td>C20</td><td>26≤b＜30</td><td>15.2＜c≤15.8</td></tr>
+                        <tr><td>C21</td><td>26≤b＜28</td><td>16.5≤c</td></tr>
+                        <tr><td>C22</td><td>24≤b＜26</td><td>c≤14</td></tr>
+                        <tr><td>C23</td><td>24≤b＜26</td><td>14＜c≤14.5</td></tr>
+                        <tr><td>C24</td><td>24≤b＜26</td><td>14.5＜c≤15</td></tr>
+                        <tr><td>C25</td><td>24≤b＜26</td><td>15.0＜c≤15.2</td></tr>
+                        <tr><td>C26</td><td>24≤b＜26</td><td>15.2＜c≤16</td></tr>
+                        <tr><td>C27</td><td>24≤b＜26</td><td>16.0＜c</td></tr>
+                        <tr><td>C28</td><td>20≤b＜24</td><td>不限</td></tr>
+                        <tr><td>C29</td><td>b＜20</td><td>不限</td></tr>
+                        <tr><td>C30</td><td>不限</td><td>不限</td></tr>
+                        <tr><td>C31</td><td>30≤b</td><td>c≤16.5</td></tr>
+                        <tr><td>C32</td><td>30≤b</td><td>16.5＜c</td></tr>
+                        <tr><td>C33</td><td>b＜30</td><td>c≤16.5</td></tr>
+                        <tr><td>C34</td><td>b＜30</td><td>16.5＜c</td></tr>
+                        <tr><td>C35</td><td>b＜30</td><td>不限</td></tr>
+                        <tr><td>C36</td><td>30≤b＜32</td><td>不限</td></tr>
+                        <tr><td>C37</td><td>b≥32</td><td>不限</td></tr>
+                        <tr><td>C38</td><td>不限</td><td>c≤17</td></tr>
+                        <tr><td>C39</td><td>不限</td><td>17＜c</td></tr>
+                        <tr><td>C40</td><td>b＜30</td><td>不限</td></tr>
+                        <tr><td>C41</td><td>b≥30</td><td>不限</td></tr>
+                        <tr><td>C42</td><td>不限</td><td>不限</td></tr>
+                        <tr><td>C43</td><td>不限</td><td>不限</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn" onclick="closeTableModal()">关闭</button>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        function checkGrade() {
+            const length = parseFloat(document.getElementById('length').value);
+            const fineness = parseFloat(document.getElementById('fineness').value);
+            
+            if (isNaN(length) || isNaN(fineness)) {
+                alert('请输入有效的数值');
+                return;
+            }
+            
+            const grade = determineGrade(length, fineness);
+            const result = document.getElementById('result');
+            const gradeResult = result.querySelector('.grade-result');
+            const resultDetails = result.querySelector('.result-details');
+            
+            result.style.display = 'block';
+            gradeResult.textContent = `对应等级: ${grade}`;
+            
+            // 查找并显示区间信息
+            const rule = gradeRules.find(r => r.grade === grade);
+            if (rule) {
+                let lengthRange = '不限';
+                let finenessRange = '不限';
+                
+                if (rule.length) {
+                    lengthRange = formatRange(rule.length, 'b');
+                }
+                if (rule.fineness) {
+                    finenessRange = formatRange(rule.fineness, 'c');
+                }
+                
+                resultDetails.innerHTML = `
+                    <p>长度范围: ${lengthRange}</p>
+                    <p>细度范围: ${finenessRange}</p>
+                `;
+            }
+        }
+        
+        function formatRange(range, variable) {
+            if (!range) return '不限';
+            let result = '';
+            if (range.min !== undefined && range.max !== undefined) {
+                result = `${range.min}≤${variable}＜${range.max}`;
+            } else if (range.min !== undefined) {
+                result = `${variable}≥${range.min}`;
+            } else if (range.max !== undefined) {
+                result = `${variable}≤${range.max}`;
+            }
+            return result || '不限';
+        }
+        
+        function showPasswordPrompt() {
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+        
+        function verifyPassword() {
+            const password = document.getElementById('password').value;
+            if (password === '1999') {
+                document.getElementById('passwordModal').style.display = 'none';
+                showTable();
+            } else {
+                alert('密码错误');
+            }
+        }
+        
+        function showTable() {
+            document.getElementById('tableModal').style.display = 'block';
+        }
+        
+        function closeTableModal() {
+            document.getElementById('tableModal').style.display = 'none';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 
