@@ -20,22 +20,14 @@ body {
 
 /* 响应式布局 */
 .content-wrapper {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
     .content-wrapper {
-        flex-direction: row;
-    }
-    
-    .input-section {
-        flex: 1;
-    }
-    
-    .result-section {
-        flex: 1;
+        grid-template-columns: 2fr 1fr;
     }
 }
 
@@ -190,7 +182,73 @@ tr.highlight {
     font-size: 16px;
 }
 
-/* 移动端优化 */
+/* 历史记录样式 */
+.history-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.history-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.history-item:hover {
+    background-color: #f8f9fa;
+}
+
+.history-grade {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 5px;
+}
+
+.history-details {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 14px;
+}
+
+.history-time {
+    color: #999;
+    font-size: 12px;
+    text-align: right;
+    margin-top: 5px;
+}
+
+/* 按钮组样式 */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-group .btn {
+    flex: 1;
+}
+
+/* 分享模态框样式 */
+#qrcode {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.share-tip {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* 响应式调整 */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
@@ -212,5 +270,17 @@ tr.highlight {
     th, td {
         padding: 8px;
         font-size: 14px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .history-details {
+        flex-direction: column;
+    }
+    
+    .history-details span {
+        margin-bottom: 5px;
     }
 } 
